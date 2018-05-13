@@ -108,3 +108,14 @@ java_import_external(
     neverlink = True,
     generated_linkable_rule_name="linkable_org_apache_commons_commons_lang_3_5_without_file",
 )
+
+build_bazel_integration_testing_version="36ffe6fe0f4bb727c1fe34209a8d6fd33d8d0d8e" # update this as needed
+http_archive(
+    name = "build_bazel_integration_testing",
+    url = "https://github.com/bazelbuild/bazel-integration-testing/archive/%s.zip"%build_bazel_integration_testing_version,
+    strip_prefix = "bazel-integration-testing-" + build_bazel_integration_testing_version,
+)
+load("@build_bazel_integration_testing//tools:repositories.bzl", "bazel_binaries")
+bazel_binaries(versions = ["0.12.0"])
+load("@build_bazel_integration_testing//tools:bazel_java_integration_test.bzl", "bazel_java_integration_test_deps")
+bazel_java_integration_test_deps()
