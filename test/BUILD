@@ -371,11 +371,12 @@ scala_junit_test(
 scala_library(
     name = "rules_scala_e2e_junit",
     srcs = ["src/main/scala/scala/test/junit/JunitNoTests.scala"],
+
     deps = [
-        "@build_bazel_integration_testing//java/build/bazel/tests/integration:workspace_driver",
-        "@build_bazel_integration_testing//java/build/bazel/tests/integration:integration",
-        "@io_bazel_rules_scala_junit_junit//jar",
-        ],
+            "@build_bazel_integration_testing//java/build/bazel/tests/integration:workspace_driver",
+            "@build_bazel_integration_testing//java/build/bazel/tests/integration:integration",
+            "@io_bazel_rules_scala_junit_junit//jar",
+            ],
     testonly = 1
 )
 
@@ -384,7 +385,7 @@ bazel_java_integration_test (
     versions = ["0.12.0"],
     test_class = "scala.test.junit.SingleTestSoTargetWillNotFailDueToNoTestsTest",
     srcs = [],
-    runtime_deps = [":rules_scala_e2e_junit"],
+    runtime_deps = [":rules_scala_e2e_junit"]
 
 )
 
