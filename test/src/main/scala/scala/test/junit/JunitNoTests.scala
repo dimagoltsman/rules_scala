@@ -28,6 +28,39 @@ class SingleTestSoTargetWillNotFailDueToNoTestsTest extends BazelBaseTestCase {
         |load("@io_bazel_rules_scala//scala:scala.bzl", "scala_repositories")
         |scala_repositories()
         |
+        |
+        |
+        |build_bazel_integration_testing_version="36ffe6fe0f4bb727c1fe34209a8d6fd33d8d0d8e" # update this as needed
+        |http_archive(
+        |    name = "build_bazel_integration_testing",
+        |    url = "https://github.com/bazelbuild/bazel-integration-testing/archive/%s.zip"%build_bazel_integration_testing_version,
+        |    strip_prefix = "bazel-integration-testing-" + build_bazel_integration_testing_version,
+        |)
+        |load("@build_bazel_integration_testing//tools:repositories.bzl", "bazel_binaries")
+        |bazel_binaries(versions = ["0.12.0"])
+        |load("@build_bazel_integration_testing//tools:bazel_java_integration_test.bzl", "bazel_java_integration_test_deps")
+        |bazel_java_integration_test_deps()
+        |
+        |
+        |load("@build_bazel_integration_testing//tools:import.bzl", "bazel_external_dependency_archive")
+        |
+        |
+        |BAZEL_JAVA_LAUNCHER_VERSION = "0.4.5"
+        |java_stub_template_url = ("raw.githubusercontent.com/bazelbuild/bazel/" +
+        |                            BAZEL_JAVA_LAUNCHER_VERSION +
+        |                            "/src/main/java/com/google/devtools/build/lib/bazel/rules/java/" +
+        |                            "java_stub_template.txt")
+        |
+        |bazel_external_dependency_archive(
+        |    name = "java_stub_template",
+        |    srcs = {
+        |        "f09d06d55cd25168427a323eb29d32beca0ded43bec80d76fc6acd8199a24489": [
+        |            "https://mirror.bazel.build/%s" % java_stub_template_url,
+        |            "https://%s" % java_stub_template_url
+        |        ],
+        |    },
+        |)
+        |
       """.stripMargin
 
 
