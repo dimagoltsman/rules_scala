@@ -10,20 +10,24 @@ class SingleTestSoTargetWillNotFailDueToNoTestsTest extends BazelBaseTestCase {
   def someTest: Unit ={
     val workspace =
       """
-        |rules_scala_version="72b402753b82377251d2370a3accfd4999707418" # update this as needed
+        |rules_scala_version="b158e5e8d5fdd78ba98771f3676f2da4deeafe05" # update this as needed
         |
         |http_archive(
-        |             name = "io_bazel_rules_scala",
-        |             url = "https://github.com/wix/rules_scala/archive/%s.zip"%rules_scala_version,
-        |             type = "zip",
-        |             strip_prefix= "rules_scala-%s" % rules_scala_version
+        | name = "io_bazel_rules_scala",
+        | url = "https://github.com/wix/rules_scala/archive/%s.zip"%rules_scala_version,
+        | type = "zip",
+        | strip_prefix= "rules_scala-%s" % rules_scala_version
         |)
+        |
+        |load("@io_bazel_rules_scala//junit:junit.bzl", "junit_repositories")
+        |junit_repositories()
         |
         |load("@io_bazel_rules_scala//scala:toolchains.bzl", "scala_register_toolchains")
         |scala_register_toolchains()
         |
         |load("@io_bazel_rules_scala//scala:scala.bzl", "scala_repositories")
         |scala_repositories()
+        |
       """.stripMargin
 
 
@@ -31,15 +35,14 @@ class SingleTestSoTargetWillNotFailDueToNoTestsTest extends BazelBaseTestCase {
 
     val build =
       """
-        |load(
-        |    "@io_bazel_rules_scala//scala:scala.bzl",
-        |    "scala_library",
-        |     )
+        |load("@io_bazel_rules_scala//scala:scala.bzl", "scala_junit_test")
         |
-        |scala_library(
-        |    name = "JunitTest",
-        |    srcs = ["JunitTest.java"],
-        |     )
+        |scala_junit_test(
+        |    name = "no_tests_found",
+        |    srcs = ["JunitTest.scala"],
+        |    suffixes = ["DoesNotMatch"],
+        |    size = "small"
+        |)
       """.stripMargin
 
     driver.scratchFile("BUILD", build)
@@ -53,7 +56,7 @@ class SingleTestSoTargetWillNotFailDueToNoTestsTest extends BazelBaseTestCase {
         |  @Test
         |  def running: Unit = {
         |  println("#########ALO########3")
-        |  al pw = new PrintWriter(new File("/private/var/tmp/_bazel_dimitrig/1aba28a4159e91abb45df531d110314d/execroot/io_bazel_rules_scala/bazel-out/darwin-fastbuild/testlogs/test/junit_no_tests/bazel0.12.0/hello.txt" ))
+        |  al pw = new PrintWriter(new File("/tmp/hello.txt" ))
         |pw.write("Hello, world")
         |pw.close
         |  }
@@ -64,6 +67,7 @@ class SingleTestSoTargetWillNotFailDueToNoTestsTest extends BazelBaseTestCase {
 
     val cmd = driver.bazelCommand("test", "//...").build()
     val res = cmd.run()
+
     cmd.getErrorLines.toArray.toSeq.foreach(println)
 
 
