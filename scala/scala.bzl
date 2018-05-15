@@ -368,7 +368,7 @@ _scala_junit_test_attrs = {
     "_hamcrest": attr.label(default=Label("//external:io_bazel_rules_scala/dependency/hamcrest/hamcrest_core")),
     "_bazel_test_runner": attr.label(default=Label("@bazel_tools//tools/jdk:TestRunner_deploy.jar"), allow_files=True),
 }
-_scala_junit_test_attrs.update(_launcher_template)
+#_scala_junit_test_attrs.update(_launcher_template)
 _scala_junit_test_attrs.update(_implicit_deps)
 _scala_junit_test_attrs.update(_common_attrs)
 _scala_junit_test_attrs.update(_junit_resolve_deps)
